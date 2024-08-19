@@ -1,10 +1,13 @@
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
+#define directedGraphInput ll n,m;cin>>n>>m;vector<ll> adj[n+1];vector<int> visited(n+1,0);for(ll i=0;i<m;i++){ll u,v;cin>>u>>v;adj[u].push_back(v);}
+#define undirectedGraphInput ll n,m;cin>>n>>m;vector<ll> adj[n+1];vector<int> visited(n+1,0);for(ll i=0;i<m;i++){ll u,v;cin>>u>>v;adj[u].push_back(v);adj[v].push_back(u);}
+#define numberOfConnectedComponentsBfs(startingNode) ll components=0;visited[startingNode]=1;queue<ll> q;q.push(startingNode);while(!q.empty()){ll node=q.front();q.pop();for(auto it:adj[node]){if(!visited[it]){visited[it]=1;q.push(it);components++;}}}
+#define numberOfConnectedComponentsDfs(startingNode) ll components=0;for(ll i=startingNode;i<n;i++){if(visited[i]==0){components++;dfs(i,adj,visited);}}
 #define vectorInput ll n;cin>>n;vector<ll> v(n,0);for(ll i=0;i<n;i++){cin>>v[i];};
-#define directedGraphInput ll n,m;cin>>n>>m;vector<ll> adj[n+1];for(ll i=0;i<m;i++){ll u,v;cin>>u>>v;adj[u].push_back(v);}
-#define undirectedGraphInput ll n,m;cin>>n>>m;vector<ll> adj[n+1];for(ll i=0;i<m;i++){ll u,v;cin>>u>>v;adj[u].push_back(v);adj[v].push_back(u);}
 ll binarySearch(vector<ll>&v,ll n){ll l=0,h=v.size();while(l<=h){ll m=l+((h-l)/2);if(n==v[m]){return m;}if(n>v[m]){l=m+1;}else{h=m-1;}};return -1;}
+void dfs(ll node,vector<ll> adj[],vector<int> &visited){visited[node]=1;for(size_t i=0;i<adj[node].size();i++){if(visited[adj[node][i]]==0){dfs(adj[node][i],adj,visited);}}}
 ll gcd(ll a,ll b){if(b){return gcd(b,a%b);}return a;}
 ll lcm(ll a,ll b){return(a/gcd(a,b))*b;}
 ll numberOfDivisors(ll n){ll t=1;for(ll i=2;i*i<=n;i++){if(n%i==0){ll e=0;do{e++;n/=i;}while(n%i==0);t*=e+1;}}if(n>1){t*=2;}return t;}
