@@ -19,6 +19,6 @@ bool shuffledPalindrome(string s){bool odd=false;map<char,ll> m;for(char& c:s){m
 int main(){
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
-	cout.tie(NULL);
+    cout.tie(NULL);
 	
 }
