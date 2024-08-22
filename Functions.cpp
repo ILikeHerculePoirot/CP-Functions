@@ -3,8 +3,8 @@ using namespace std;
 typedef long long ll;
 #define directedGraphInput ll n,m;cin>>n>>m;vector<ll> adj[n+1];vector<int> visited(n+1,0);for(ll i=0;i<m;i++){ll u,v;cin>>u>>v;adj[u].push_back(v);}
 #define undirectedGraphInput ll n,m;cin>>n>>m;vector<ll> adj[n+1];vector<int> visited(n+1,0);for(ll i=0;i<m;i++){ll u,v;cin>>u>>v;adj[u].push_back(v);adj[v].push_back(u);}
-#define numberOfConnectedComponentsBfs(startingNode) ll components=0;visited[startingNode]=1;queue<ll> q;q.push(startingNode);while(!q.empty()){ll node=q.front();q.pop();for(auto it:adj[node]){if(!visited[it]){visited[it]=1;q.push(it);components++;}}}
-#define numberOfConnectedComponentsDfs(startingNode) ll components=0;for(ll i=startingNode;i<n;i++){if(visited[i]==0){components++;dfs(i,adj,visited);}}
+#define numberOfComponentsBfs(startingNode) ll components=0;visited[startingNode]=1;queue<ll> q;q.push(startingNode);while(!q.empty()){ll node=q.front();q.pop();for(auto it:adj[node]){if(!visited[it]){visited[it]=1;q.push(it);components++;}}}
+#define numberOfComponentsDfs(startingNode) ll components=0;for(ll i=startingNode;i<n;i++){if(visited[i]==0){components++;dfs(i,adj,visited);}}
 #define vectorInput ll n;cin>>n;vector<ll> v(n,0);for(ll i=0;i<n;i++){cin>>v[i];};
 ll binarySearch(vector<ll>&v,ll n){ll l=0,h=v.size();while(l<=h){ll m=l+((h-l)/2);if(n==v[m]){return m;}if(n>v[m]){l=m+1;}else{h=m-1;}};return -1;}
 void dfs(ll node,vector<ll> adj[],vector<int> &visited){visited[node]=1;for(size_t i=0;i<adj[node].size();i++){if(visited[adj[node][i]]==0){dfs(adj[node][i],adj,visited);}}}
@@ -19,3 +19,9 @@ ll powerModulo(ll a,ll b,ll m){if(b<0){return 0;};ll r=1;a%=m;while(b>0){if(b&1)
 bool powerOfTwo(ll n){return n>0 && !(n&(n-1));}
 bool prime(ll n){if(n<2){return false;};for(ll i=2;i*i<=n;i++){if(n%i==0){return false;}};return true;}
 bool shuffledPalindrome(string s){bool odd=false;map<char,ll> m;for(char& c:s){m[c]++;};for(auto it=m.begin();it!=m.end();it++){if(it->second%2){if(odd){return false;};odd=true;}};return true;}
+int main(){
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
+	
+}
