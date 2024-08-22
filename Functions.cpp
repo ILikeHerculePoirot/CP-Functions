@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
-#define directedGraphInput \
+#define directedGraphInput\
 	ll n,m;\
 	cin>>n>>m;\
 	vector<ll> adj[n+1];\
@@ -13,7 +13,19 @@ typedef long long ll;
 		cin>>u>>v;\
 		adj[u].push_back(v);\
 	}
-#define undirectedGraphInput \
+#define directedGraphInputEdgeWeight\
+	ll n,m;\
+	cin>>n>>m;\
+	vector<vector<ll>> edgeWeight(n+1,vector<ll>(n+1,-1));\
+	vector<int> visited(n+1,0);\
+	ll components=0;\
+	components++;\
+	for(ll i=0;i<m;i++){\
+		ll u,v,ew;\
+		cin>>u>>v>>ew;\
+		edgeWeight[u][v]=ew;\
+	}
+#define undirectedGraphInput\
 	ll n,m;\
 	cin>>n>>m;\
 	vector<ll> adj[n+1];\
@@ -26,7 +38,20 @@ typedef long long ll;
 		adj[u].push_back(v);\
 		adj[v].push_back(u);\
 	}
-#define vectorInput \
+#define undirectedGraphInputEdgeWeight\
+	ll n,m;\
+	cin>>n>>m;\
+	vector<vector<ll>> edgeWeight(n+1,vector<ll>(n+1,-1));\
+	vector<int> visited(n+1,0);\
+	ll components=0;\
+	components++;\
+	for(ll i=0;i<m;i++){\
+		ll u,v,ew;\
+		cin>>u>>v>>ew;\
+		edgeWeight[u][v]=ew;\
+		edgeWeight[v][u]=ew;\
+	}
+#define vectorInput\
 	ll n;\
 	cin>>n;\
 	vector<ll> v(n,0);\
@@ -40,10 +65,10 @@ void bfs(ll startingNode,vector<ll> adj[],vector<int> &visited,ll &components){
 	while(!q.empty()){
 		ll node=q.front();
 		q.pop();
-		for(auto it:adj[node]){
-			if(!visited[it]){
-				visited[it]=1;
-				q.push(it);
+		for(size_t i=0;i<adj[node].size();i++){
+			if(!visited[adj[node][i]]){
+				visited[adj[node][i]]=1;
+				q.push(adj[node][i]);
 				components++;
 			}
 		}
@@ -64,6 +89,27 @@ ll binarySearch(vector<ll>&v,ll n){
 		}
 	}
 	return -1;
+}
+ll dijkstra(ll startingNode,ll endingNode,vector<int> &visited,vector<vector<ll>> &edgeWeight,ll n){
+	vector<ll> dist(n+1,LLONG_MAX);
+    dist[startingNode]=0;
+    priority_queue<pair<ll,ll>,vector<pair<ll,ll>>,greater<pair<ll,ll>>> pq;
+    pq.push({0,startingNode});
+    while(!pq.empty()){
+        ll node=pq.top().second,dis=pq.top().first;
+        pq.pop();
+        if(visited[node]){
+            continue;
+        }
+        visited[node]=1;
+        for(ll i=0;i<=n;i++){
+            if(edgeWeight[node][i]!=-1 && dis+edgeWeight[node][i]<dist[i]) {
+                dist[i]=dis+edgeWeight[node][i];
+                pq.push({dist[i],i});
+            }
+        }
+    }
+    return dist[endingNode];
 }
 void dfs(ll node,vector<ll> adj[],vector<int> &visited,ll &components){
 	visited[node]=1;
@@ -181,10 +227,10 @@ ll shortestPath(ll startingNode,ll endingNode,vector<ll> adj[],ll n){
 	while(!q.empty()){
 		ll node=q.front();
 		q.pop();
-		for(auto it:adj[node]){
-			if(dist[node]+1<dist[it]){
-				dist[it]=dist[node]+1;
-				q.push(it);
+		for(size_t i=0;i<adj[node].size();i++){
+			if(dist[node]+1<dist[adj[node][i]]){
+				dist[adj[node][i]]=dist[node]+1;
+				q.push(adj[node][i]);
 			}
 		}
 	}
