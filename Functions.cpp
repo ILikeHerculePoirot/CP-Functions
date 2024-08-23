@@ -16,7 +16,7 @@ typedef long long ll;
 #define directedGraphInputEdgeWeight\
 	ll n,m;\
 	cin>>n>>m;\
-	vector<vector<ll>> edgeWeight(n+1,vector<ll>(n+1,LLONG_MIN));\
+	vector<vector<ll>> edgeWeight(n+1,vector<ll>(n+1,LLONG_MAX));\
 	vector<int> visited(n+1,0);\
 	ll components=0;\
 	components++;\
@@ -41,7 +41,7 @@ typedef long long ll;
 #define undirectedGraphInputEdgeWeight\
 	ll n,m;\
 	cin>>n>>m;\
-	vector<vector<ll>> edgeWeight(n+1,vector<ll>(n+1,LLONG_MIN));\
+	vector<vector<ll>> edgeWeight(n+1,vector<ll>(n+1,LLONG_MAX));\
 	vector<int> visited(n+1,0);\
 	ll components=0;\
 	components++;\
@@ -112,7 +112,7 @@ vector<ll> dijkstra(ll startingNode,vector<int> &visited,vector<vector<ll>> &edg
         }
         visited[node]=1;
         for(ll i=0;i<=n;i++){
-            if(edgeWeight[node][i]!=LLONG_MIN && dis+edgeWeight[node][i]<dist[i]){
+            if(edgeWeight[node][i]!=LLONG_MAX && dis+edgeWeight[node][i]<dist[i]){
                 dist[i]=dis+edgeWeight[node][i];
                 pq.push({dist[i],i});
             }
@@ -124,6 +124,20 @@ vector<ll> dijkstra(ll startingNode,vector<int> &visited,vector<vector<ll>> &edg
 		}
 	}
 	return dist;
+}
+void floydWarshall(vector<vector<ll>> &edgeWeight,ll n){
+	for(int i=0;i<=n;i++){
+		edgeWeight[i][i]=0;
+	}
+	for(ll k=0;k<=n;k++){
+        for(ll i=0;i<=n;i++){
+            for(ll j=0;j<=n;j++){
+                if(edgeWeight[i][k]!=LLONG_MAX && edgeWeight[k][j]!=LLONG_MAX){
+                    edgeWeight[i][j]=min(edgeWeight[i][j],edgeWeight[i][k]+edgeWeight[k][j]);
+                }
+            }
+        }
+    }
 }
 ll gcd(ll a,ll b){
 	if(b){
