@@ -8,6 +8,18 @@ typedef long long ll;
 	for(ll i=0;i<n;i++){\
 		cin>>v[i];\
 	}
+#define disjointSetInput\
+	ll n,m;\
+	cin>>n>>m;\
+	vector<ll> parent(n+1,0),rank(n+1,0);\
+	for(ll i=0;i-1<n;i++){\
+		parent[i]=i;\
+	}\
+	for(ll i=0;i<m;i++){\
+		ll u,v;\
+		cin>>u>>v;\
+		Union(u,v,parent,rank);\
+	}
 #define directedGraphInput\
 	ll n,m;\
 	cin>>n>>m;\
@@ -110,7 +122,7 @@ vector<ll> dijkstra(ll startingNode,vector<int> &visited,vector<vector<ll>> &edg
 	return dist;
 }
 void floydWarshall(vector<vector<ll>> &edgeWeight,ll n){
-	for(int i=0;i<=n;i++){
+	for(ll i=0;i<=n;i++){
 		edgeWeight[i][i]=0;
 	}
 	for(ll k=0;k<=n;k++){
@@ -257,6 +269,26 @@ bool prime(ll n){
 		}
 	}
 	return true;
+}
+ll findParent(ll node,vector<ll> &parent){
+	if(node==parent[node]){
+		return node;
+	}
+	return parent[node]=findParent(parent[node],parent);
+}
+void Union(ll u,ll v,vector<ll> &parent,vector<ll> &rank){
+	u=findParent(u,parent);
+	v=findParent(v,parent);
+	if(rank[u]<rank[v]){
+		parent[u]=v;
+	}
+	else if(rank[v]<rank[u]){
+		parent[v]=u;
+	}
+	else{
+		parent[v]=u;
+		rank[u]++;
+	}
 }
 int main(){
 	ios_base::sync_with_stdio(false);
