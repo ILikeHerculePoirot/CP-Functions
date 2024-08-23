@@ -16,7 +16,7 @@ typedef long long ll;
 #define directedGraphInputEdgeWeight\
 	ll n,m;\
 	cin>>n>>m;\
-	vector<vector<ll>> edgeWeight(n+1,vector<ll>(n+1,-1));\
+	vector<vector<ll>> edgeWeight(n+1,vector<ll>(n+1,LLONG_MIN));\
 	vector<int> visited(n+1,0);\
 	ll components=0;\
 	components++;\
@@ -41,7 +41,7 @@ typedef long long ll;
 #define undirectedGraphInputEdgeWeight\
 	ll n,m;\
 	cin>>n>>m;\
-	vector<vector<ll>> edgeWeight(n+1,vector<ll>(n+1,-1));\
+	vector<vector<ll>> edgeWeight(n+1,vector<ll>(n+1,LLONG_MIN));\
 	vector<int> visited(n+1,0);\
 	ll components=0;\
 	components++;\
@@ -90,7 +90,16 @@ ll binarySearch(vector<ll>&v,ll n){
 	}
 	return -1;
 }
-ll dijkstra(ll startingNode,ll endingNode,vector<int> &visited,vector<vector<ll>> &edgeWeight,ll n){
+void dfs(ll node,vector<ll> adj[],vector<int> &visited,ll &components){
+	visited[node]=1;
+	for(size_t i=0;i<adj[node].size();i++){
+		if(!visited[adj[node][i]]){
+			components++;
+			dfs(adj[node][i],adj,visited,components);
+		}
+	}
+}
+vector<ll> dijkstra(ll startingNode,vector<int> &visited,vector<vector<ll>> &edgeWeight,ll n){
 	vector<ll> dist(n+1,LLONG_MAX);
     dist[startingNode]=0;
     priority_queue<pair<ll,ll>,vector<pair<ll,ll>>,greater<pair<ll,ll>>> pq;
@@ -103,22 +112,18 @@ ll dijkstra(ll startingNode,ll endingNode,vector<int> &visited,vector<vector<ll>
         }
         visited[node]=1;
         for(ll i=0;i<=n;i++){
-            if(edgeWeight[node][i]!=-1 && dis+edgeWeight[node][i]<dist[i]) {
+            if(edgeWeight[node][i]!=LLONG_MIN && dis+edgeWeight[node][i]<dist[i]){
                 dist[i]=dis+edgeWeight[node][i];
                 pq.push({dist[i],i});
             }
         }
     }
-    return dist[endingNode];
-}
-void dfs(ll node,vector<ll> adj[],vector<int> &visited,ll &components){
-	visited[node]=1;
-	for(size_t i=0;i<adj[node].size();i++){
-		if(!visited[adj[node][i]]){
-			components++;
-			dfs(adj[node][i],adj,visited,components);
+    for(size_t i=0;i<dist.size();i++){
+		if(dist[i]==LLONG_MAX){
+			dist[i]=-1;
 		}
 	}
+	return dist;
 }
 ll gcd(ll a,ll b){
 	if(b){
@@ -143,28 +148,6 @@ ll numberOfDivisors(ll n){
 	}
 	if(n>1){
 		t*=2;
-	}
-	return t;
-}
-ll sumOfDivisors(ll n){
-	ll t=1;
-	for(ll i=2;i*i<=n;i++){
-		if(n%i==0){
-			ll e=0;
-			do{
-				e++;
-				n/=i;
-			}while(n%i==0);
-			ll s=0,p=1;
-			do{
-				s+=p;
-				p*=i;
-			}while (e-->0);
-			t*=s;
-		}
-	}
-	if(n>1){
-		t*=(1+n);
 	}
 	return t;
 }
@@ -254,6 +237,28 @@ bool shuffledPalindrome(string s){
 		}
 	}
 	return true;
+}
+ll sumOfDivisors(ll n){
+	ll t=1;
+	for(ll i=2;i*i<=n;i++){
+		if(n%i==0){
+			ll e=0;
+			do{
+				e++;
+				n/=i;
+			}while(n%i==0);
+			ll s=0,p=1;
+			do{
+				s+=p;
+				p*=i;
+			}while(e-->0);
+			t*=s;
+		}
+	}
+	if(n>1){
+		t*=(1+n);
+	}
+	return t;
 }
 int main(){
 	ios_base::sync_with_stdio(false);
