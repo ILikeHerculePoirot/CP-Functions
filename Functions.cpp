@@ -103,15 +103,14 @@ vector<ll> dijkstra(ll startingNode,vector<int> &visited,vector<vector<ll>> &edg
     while(!pq.empty()){
         ll node=pq.top().second,dis=pq.top().first;
         pq.pop();
-        if(visited[node]){
-            continue;
-        }
-        visited[node]=1;
-        for(ll i=0;i<=n;i++){
-            if(edgeWeight[node][i]!=LLONG_MAX && dis+edgeWeight[node][i]<dist[i]){
-                dist[i]=dis+edgeWeight[node][i];
-                pq.push({dist[i],i});
-            }
+        if(!visited[node]){
+            visited[node]=1;
+			for(ll i=0;i<=n;i++){
+				if(edgeWeight[node][i]!=LLONG_MAX && dis+edgeWeight[node][i]<dist[i]){
+					dist[i]=dis+edgeWeight[node][i];
+					pq.push({dist[i],i});
+				}
+			}
         }
     }
     for(size_t i=0;i<dist.size();i++){
