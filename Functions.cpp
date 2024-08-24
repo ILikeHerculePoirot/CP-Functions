@@ -12,7 +12,7 @@ typedef long long ll;
 	ll n,m;\
 	cin>>n>>m;\
 	vector<ll> parent(n+1,0),rank(n+1,0);\
-	for(ll i=0;i-1<n;i++){\
+	for(ll i=0;i<=n;i++){\
 		parent[i]=i;\
 	}\
 	for(ll i=0;i<m;i++){\
@@ -294,5 +294,4 @@ int main(){
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 	cout.tie(NULL);
-	
 }
