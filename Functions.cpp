@@ -154,6 +154,26 @@ ll shortestPath(ll startingNode,ll endingNode,vector<ll> adj[],ll n){
 	}
 	return dist[endingNode];
 }
+ll findParent(ll node,vector<ll> &parent){
+	if(node==parent[node]){
+		return node;
+	}
+	return parent[node]=findParent(parent[node],parent);
+}
+void Union(ll u,ll v,vector<ll> &parent,vector<ll> &rank){
+	u=findParent(u,parent);
+	v=findParent(v,parent);
+	if(rank[u]<rank[v]){
+		parent[u]=v;
+	}
+	else if(rank[v]<rank[u]){
+		parent[v]=u;
+	}
+	else{
+		parent[v]=u;
+		rank[u]++;
+	}
+}
 ll binarySearch(vector<ll>&v,ll n){
 	ll l=0,h=v.size();
 	while(l<=h){
@@ -226,6 +246,17 @@ bool perfectSquare(long double n){
 	ll s=sqrt(n);
 	return(s*s==n);
 }
+bool prime(ll n){
+	if(n<2){
+		return false;
+	}
+	for(ll i=2;i*i<=n;i++){
+		if(n%i==0){
+			return false;
+		}
+	}
+	return true;
+}
 ll power(ll a,ll b){
 	if(b<0){
 		return 0;
@@ -255,39 +286,31 @@ ll powerModulo(ll a,ll b,ll m){
 	}
 	return r;
 }
+bool kthBit(ll n,ll k){
+	return ((n&(1<<k))!=0);
+}
+void clearKthBit(ll &n,ll k){
+	n=(n&(~(1<<k)));
+}
+void setKthBit(ll &n,ll k){
+	n=(n|(1<<k));
+}
+void toggleKthBit(ll &n,ll k){
+	n=(n^(1<<k));
+}
+void removeLastSetBit(ll &n){
+	n=(n&(n-1));
+}
+ll countSetBits(ll n){
+	ll c=0;
+    while(n!=0){
+        n=(n&(n-1));
+        c++;
+    }
+    return c;
+}
 bool powerOfTwo(ll n){
 	return n>0 && !(n&(n-1));
-}
-bool prime(ll n){
-	if(n<2){
-		return false;
-	}
-	for(ll i=2;i*i<=n;i++){
-		if(n%i==0){
-			return false;
-		}
-	}
-	return true;
-}
-ll findParent(ll node,vector<ll> &parent){
-	if(node==parent[node]){
-		return node;
-	}
-	return parent[node]=findParent(parent[node],parent);
-}
-void Union(ll u,ll v,vector<ll> &parent,vector<ll> &rank){
-	u=findParent(u,parent);
-	v=findParent(v,parent);
-	if(rank[u]<rank[v]){
-		parent[u]=v;
-	}
-	else if(rank[v]<rank[u]){
-		parent[v]=u;
-	}
-	else{
-		parent[v]=u;
-		rank[u]++;
-	}
 }
 int main(){
 	ios_base::sync_with_stdio(false);
