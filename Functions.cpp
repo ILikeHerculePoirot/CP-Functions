@@ -187,15 +187,29 @@ void minSegTree(ll i,ll l,ll h,vector<ll> &v,vector<ll> &seg){
 	minSegTree((2*i)+2,m+1,h,v,seg);
 	seg[i]=min(seg[(2*i)+1],seg[(2*i)+2]);
 }
-ll segTreeQuery(ll i,ll low,ll high,ll left,ll right,vector<ll> &seg){
+ll minSegTreeQuery(ll i,ll low,ll high,ll left,ll right,vector<ll> &seg){
 	if(right<low || high<left){
 		return LLONG_MAX;
 	}
 	if(low>=left && high<=right){
 		return seg[i];
 	}
-	ll m=low+((high-low)/2),l=segTreeQuery((2*i)+1,low,m,left,right,seg),r=segTreeQuery((2*i)+2,m+1,high,left,right,seg);
+	ll mid=low+((high-low)/2),l=minSegTreeQuery((2*i)+1,low,mid,left,right,seg),r=minSegTreeQuery((2*i)+2,mid+1,high,left,right,seg);
 	return min(l,r);
+}
+void minSegTreeUpdate(ll ind,ll low,ll high,ll i,ll val,vector<ll> &seg){
+	if(low==high){
+		seg[ind]=val;
+		return;
+	}
+	ll mid=low+((high-low)/2);
+	if(i<=mid){
+		minSegTreeUpdate((2*ind)+1,low,mid,i,val,seg);
+	}
+	else{
+		minSegTreeUpdate((2*ind)+2,mid+1,high,i,val,seg);
+	}
+	seg[ind]=min(seg[(2*ind)+1],seg[(2*ind)+2]);
 }
 ll binarySearch(vector<ll>&v,ll n){
 	ll l=0,h=v.size();
