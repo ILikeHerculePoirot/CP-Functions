@@ -8,6 +8,9 @@ typedef long long ll;
 	for(ll i=0;i<n;i++){\
 		cin>>v[i];\
 	}
+#define segTreeInit\
+	vectorInput;\
+	vector<ll> seg((4*n),0);
 #define disjointSetInput\
 	ll n,m;\
 	cin>>n>>m;\
@@ -173,6 +176,26 @@ void Union(ll u,ll v,vector<ll> &parent,vector<ll> &rank){
 		parent[v]=u;
 		rank[u]++;
 	}
+}
+void minSegTree(ll i,ll l,ll h,vector<ll> &v,vector<ll> &seg){
+	if(l==h){
+		seg[i]=v[l];
+		return;
+	}
+	ll m=l+((h-l)/2);
+	minSegTree((2*i)+1,l,m,v,seg);
+	minSegTree((2*i)+2,m+1,h,v,seg);
+	seg[i]=min(seg[(2*i)+1],seg[(2*i)+2]);
+}
+ll segTreeQuery(ll i,ll low,ll high,ll left,ll right,vector<ll> &seg){
+	if(right<low || high<left){
+		return LLONG_MAX;
+	}
+	if(low>=left && high<=right){
+		return seg[i];
+	}
+	ll m=low+((high-low)/2),l=segTreeQuery((2*i)+1,low,m,left,right,seg),r=segTreeQuery((2*i)+2,m+1,high,left,right,seg);
+	return min(l,r);
 }
 ll binarySearch(vector<ll>&v,ll n){
 	ll l=0,h=v.size();
