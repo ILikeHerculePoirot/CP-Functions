@@ -227,11 +227,15 @@ ll binarySearch(vector<ll>&v,ll n){
 	}
 	return -1;
 }
-ll gcd(ll a,ll b){
-	if(b){
-		return gcd(b,a%b);
+ll factorial(ll n){
+    if(n==0){
+    	return 1;
 	}
-	return a;
+    ll r=1;
+    for(ll i=2;i<=n;i++){
+        r*=i;
+	}
+    return r;
 }
 ll lcm(ll a,ll b){
 	return(a/gcd(a,b))*b;
