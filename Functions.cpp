@@ -1,242 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
-//Graph
-#define directedGraphInput\
-	ll n,m;\
-	cin>>n>>m;\
-	vector<ll> adj[n+1];\
-	vector<int> visited(n+1,0);\
-	ll components=0;\
-	components++;\
-	for(ll i=0;i<m;i++){\
-		ll u,v;\
-		cin>>u>>v;\
-		adj[u].push_back(v);\
-	}
-#define directedGraphInputEdgeWeight\
-	ll n,m;\
-	cin>>n>>m;\
-	vector<vector<ll>> edgeWeight(n+1,vector<ll>(n+1,LLONG_MAX));\
-	vector<int> visited(n+1,0);\
-	ll components=0;\
-	components++;\
-	for(ll i=0;i<m;i++){\
-		ll u,v,ew;\
-		cin>>u>>v>>ew;\
-		edgeWeight[u][v]=ew;\
-	}
-#define undirectedGraphInput\
-	ll n,m;\
-	cin>>n>>m;\
-	vector<ll> adj[n+1];\
-	vector<int> visited(n+1,0);\
-	ll components=0;\
-	components++;\
-	for(ll i=0;i<m;i++){\
-		ll u,v;\
-		cin>>u>>v;\
-		adj[u].push_back(v);\
-		adj[v].push_back(u);\
-	}
-#define undirectedGraphInputEdgeWeight\
-	ll n,m;\
-	cin>>n>>m;\
-	vector<vector<ll>> edgeWeight(n+1,vector<ll>(n+1,LLONG_MAX));\
-	vector<int> visited(n+1,0);\
-	ll components=0;\
-	components++;\
-	for(ll i=0;i<m;i++){\
-		ll u,v,ew;\
-		cin>>u>>v>>ew;\
-		edgeWeight[u][v]=ew;\
-		edgeWeight[v][u]=ew;\
-	}
-void bfs(ll startingNode,vector<ll> adj[],vector<int> &visited,ll &components){
-	visited[startingNode]=1;
-	queue<ll> q;
-	q.push(startingNode);
-	while(!q.empty()){
-		ll node=q.front();
-		q.pop();
-		for(size_t i=0;i<adj[node].size();i++){
-			if(!visited[adj[node][i]]){
-				visited[adj[node][i]]=1;
-				q.push(adj[node][i]);
-				components++;
-			}
-		}
-	}
-}
-void dfs(ll node,vector<ll> adj[],vector<int> &visited,ll &components){
-	visited[node]=1;
-	for(size_t i=0;i<adj[node].size();i++){
-		if(!visited[adj[node][i]]){
-			components++;
-			dfs(adj[node][i],adj,visited,components);
-		}
-	}
-}
-vector<ll> dijkstra(ll startingNode,vector<int> &visited,vector<vector<ll>> &edgeWeight,ll n){
-	vector<ll> dist(n+1,LLONG_MAX);
-    dist[startingNode]=0;
-    priority_queue<pair<ll,ll>,vector<pair<ll,ll>>,greater<pair<ll,ll>>> pq;
-    pq.push({0,startingNode});
-    while(!pq.empty()){
-        ll node=pq.top().second,dis=pq.top().first;
-        pq.pop();
-        if(!visited[node]){
-            visited[node]=1;
-			for(ll i=0;i<=n;i++){
-				if(edgeWeight[node][i]!=LLONG_MAX && dis+edgeWeight[node][i]<dist[i]){
-					dist[i]=dis+edgeWeight[node][i];
-					pq.push({dist[i],i});
-				}
-			}
-        }
-    }
-    for(size_t i=0;i<dist.size();i++){
-		if(dist[i]==LLONG_MAX){
-			dist[i]=-1;
-		}
-	}
-	return dist;
-}
-void floydWarshall(vector<vector<ll>> &edgeWeight,ll n){
-	for(ll i=0;i<=n;i++){
-		edgeWeight[i][i]=0;
-	}
-	for(ll k=0;k<=n;k++){
-        for(ll i=0;i<=n;i++){
-            for(ll j=0;j<=n;j++){
-                if(edgeWeight[i][k]!=LLONG_MAX && edgeWeight[k][j]!=LLONG_MAX){
-                    edgeWeight[i][j]=min(edgeWeight[i][j],edgeWeight[i][k]+edgeWeight[k][j]);
-                }
-            }
-        }
-    }
-}
-ll shortestPath(ll startingNode,ll endingNode,vector<ll> adj[],ll n){
-	vector<ll> dist(n+1,LLONG_MAX);
-	queue<ll> q;
-	dist[startingNode]=0;
-	q.push(startingNode);
-	while(!q.empty()){
-		ll node=q.front();
-		q.pop();
-		for(size_t i=0;i<adj[node].size();i++){
-			if(dist[node]+1<dist[adj[node][i]]){
-				dist[adj[node][i]]=dist[node]+1;
-				q.push(adj[node][i]);
-			}
-		}
-	}
-	if(dist[endingNode]==LLONG_MAX){
-		dist[endingNode]=-1;
-	}
-	return dist[endingNode];
-}
-//Segment Tree
-#define segTreeInit\
-	ll n;\
-	cin>>n;\
-	vector<ll> v(n,0);\
-	for(ll i=0;i<n;i++){\
-		cin>>v[i];\
-	}\
-	vector<ll> seg((4*n),0);
-void minSegTree(ll i,ll l,ll h,vector<ll> &v,vector<ll> &seg){
-	if(l==h){
-		seg[i]=v[l];
-		return;
-	}
-	ll m=l+((h-l)/2);
-	minSegTree((2*i)+1,l,m,v,seg);
-	minSegTree((2*i)+2,m+1,h,v,seg);
-	seg[i]=min(seg[(2*i)+1],seg[(2*i)+2]);
-}
-ll minSegTreeQuery(ll i,ll low,ll high,ll left,ll right,vector<ll> &seg){
-	if(right<low || high<left){
-		return LLONG_MAX;
-	}
-	if(low>=left && high<=right){
-		return seg[i];
-	}
-	ll mid=low+((high-low)/2),l=minSegTreeQuery((2*i)+1,low,mid,left,right,seg),r=minSegTreeQuery((2*i)+2,mid+1,high,left,right,seg);
-	return min(l,r);
-}
-void minSegTreeUpdate(ll ind,ll low,ll high,ll i,ll val,vector<ll> &seg){
-	if(low==high){
-		seg[ind]=val;
-		return;
-	}
-	ll mid=low+((high-low)/2);
-	if(i<=mid){
-		minSegTreeUpdate((2*ind)+1,low,mid,i,val,seg);
-	}
-	else{
-		minSegTreeUpdate((2*ind)+2,mid+1,high,i,val,seg);
-	}
-	seg[ind]=min(seg[(2*ind)+1],seg[(2*ind)+2]);
-}
-//Disjoint Set
-#define disjointSetInput\
-	ll n,m;\
-	cin>>n>>m;\
-	vector<ll> parent(n+1,0),rank(n+1,0);\
-	for(ll i=0;i<=n;i++){\
-		parent[i]=i;\
-	}\
-	for(ll i=0;i<m;i++){\
-		ll u,v;\
-		cin>>u>>v;\
-		Union(u,v,parent,rank);\
-	}
-ll findParent(ll node,vector<ll> &parent){
-	if(node==parent[node]){
-		return node;
-	}
-	return parent[node]=findParent(parent[node],parent);
-}
-void Union(ll u,ll v,vector<ll> &parent,vector<ll> &rank){
-	u=findParent(u,parent);
-	v=findParent(v,parent);
-	if(rank[u]<rank[v]){
-		parent[u]=v;
-	}
-	else if(rank[v]<rank[u]){
-		parent[v]=u;
-	}
-	else{
-		parent[v]=u;
-		rank[u]++;
-	}
-}
-//Binary Search
-ll binarySearch(vector<ll>&v,ll n){
-	ll l=0,h=v.size();
-	while(l<=h){
-		ll m=l+((h-l)/2);
-		if(n==v[m]){
-			return m;
-		}
-		if(n>v[m]){
-			l=m+1;
-		}
-		else{
-			h=m-1;
-		}
-	}
-	return -1;
-}
-ll binaryLift(){
-	ll t=0;
-	for(ll i=1<<30;i>=1;i>>=1){
-  		t+=(i*f(i+t));
-	}
-	return t;
-}
-//Binary Manipulation
 bool kthBit(ll n,ll k){
 	return ((n&(1<<k))!=0);
 }
@@ -263,7 +27,6 @@ ll countSetBits(ll n){
 bool powerOfTwo(ll n){
 	return n>0 && !(n&(n-1));
 }
-//Number theory
 ll factorial(ll n){
     if(n==0){
     	return 1;
@@ -370,6 +133,195 @@ ll powerModulo(ll a,ll b,ll m){
 	}
 	return r;
 }
+ll binarySearch(vector<ll>&v,ll n){
+	ll l=0,h=v.size();
+	while(l<=h){
+		ll m=l+((h-l)/2);
+		if(n==v[m]){
+			return m;
+		}
+		if(n>v[m]){
+			l=m+1;
+		}
+		else{
+			h=m-1;
+		}
+	}
+	return -1;
+}
+ll binaryLift(){
+	ll t=0;
+	for(ll i=1<<30;i>=1;i>>=1){
+		//t+=(i*f(i+t));
+	}
+	return t;
+}
+class disjointSet{
+public:
+	ll n,m;
+	vector<ll> parent,rank;
+	void disjointSetInput(){
+		cin>>n>>m;
+		parent.resize(n+1);
+		rank.resize(n+1);
+		for(ll i=0;i<=n;i++){
+			parent[i]=i;
+		}
+		for(ll i=0;i<m;i++){
+			ll u,v;
+			cin>>u>>v;
+			Union(u,v);
+		}
+	}
+	void Union(ll u,ll v){
+		u=findParent(u);
+		v=findParent(v);
+		if(rank[u]<rank[v]){
+			parent[u]=v;
+		}
+		else if(rank[v]<rank[u]){
+			parent[v]=u;
+		}
+		else{
+			parent[v]=u;
+			rank[u]++;
+		}
+	}
+	ll findParent(ll node){
+		if(node==parent[node]){
+			return node;
+		}
+		return parent[node]=findParent(parent[node]);
+	}
+};
+class Graph{
+public:
+	ll n,m,u,v,ew;
+	vector<vector<ll>> adj,edgeWeight;
+	vector<int> visited;
+	void directedGraphInput(){
+		cin>>n>>m;
+		adj.resize(n+1);
+		visited.resize(n+1);
+		for(ll i=0;i<m;i++){
+			cin>>u>>v;
+			adj[u].push_back(v);
+		}
+	}
+	void directedGraphInputEdgeWeight(){
+		cin>>n>>m;
+		adj.resize(n+1);
+		visited.resize(n+1);
+		edgeWeight.resize(n+1,vector<ll>(n+1,LLONG_MAX));
+		for(ll i=0;i<m;i++){
+			cin>>u>>v>>ew;
+			edgeWeight[u][v]=ew;
+		}
+	}
+	void undirectedGraphInput(){
+		cin>>n>>m;
+		adj.resize(n+1);
+		visited.resize(n+1);
+		for(ll i=0;i<m;i++){
+			cin>>u>>v;
+			adj[u].push_back(v);
+			adj[v].push_back(u);
+		}
+	}
+	void undirectedGraphInputEdgeWeight(){
+		cin>>n>>m;
+		adj.resize(n+1);
+		visited.resize(n+1);
+		edgeWeight.resize(n+1,vector<ll>(n+1,LLONG_MAX));
+		for(ll i=0;i<m;i++){
+			cin>>u>>v>>ew;
+			edgeWeight[u][v]=ew;
+			edgeWeight[v][u]=ew;
+		}
+	}
+	void bfs(ll startingNode){
+		visited[startingNode]=1;
+		queue<ll> q;
+		q.push(startingNode);
+		while(!q.empty()){
+			ll node=q.front();
+			q.pop();
+			for(size_t i=0;i<adj[node].size();i++){
+				if(!visited[adj[node][i]]){
+					visited[adj[node][i]]=1;
+					q.push(adj[node][i]);
+				}
+			}
+		}
+	}
+	void dfs(ll node){
+		visited[node]=1;
+		for(size_t i=0;i<adj[node].size();i++){
+			if(!visited[adj[node][i]]){
+				dfs(adj[node][i]);
+			}
+		}
+	}
+	vector<ll> dijkstra(ll startingNode){
+		vector<ll> dist(n+1,LLONG_MAX);
+		dist[startingNode]=0;
+		priority_queue<pair<ll,ll>,vector<pair<ll,ll>>,greater<pair<ll,ll>>> pq;
+		pq.push({0,startingNode});
+		while(!pq.empty()){
+			ll node=pq.top().second,dis=pq.top().first;
+			pq.pop();
+			if(!visited[node]){
+				visited[node]=1;
+				for(ll i=0;i<=n;i++){
+					if(edgeWeight[node][i]!=LLONG_MAX && dis+edgeWeight[node][i]<dist[i]){
+						dist[i]=dis+edgeWeight[node][i];
+						pq.push({dist[i],i});
+					}
+				}
+			}
+		}
+		for(size_t i=0;i<dist.size();i++){
+			if(dist[i]==LLONG_MAX){
+				dist[i]=-1;
+			}
+		}
+		return dist;
+	}
+	void floydWarshall(){
+		for(ll i=0;i<=n;i++){
+			edgeWeight[i][i]=0;
+		}
+		for(ll k=0;k<=n;k++){
+			for(ll i=0;i<=n;i++){
+				for(ll j=0;j<=n;j++){
+					if(edgeWeight[i][k]!=LLONG_MAX && edgeWeight[k][j]!=LLONG_MAX){
+						edgeWeight[i][j]=min(edgeWeight[i][j],edgeWeight[i][k]+edgeWeight[k][j]);
+					}
+				}
+			}
+		}
+	}
+	ll shortestPath(ll startingNode,ll endingNode){
+		vector<ll> dist(n+1,LLONG_MAX);
+		queue<ll> q;
+		dist[startingNode]=0;
+		q.push(startingNode);
+		while(!q.empty()){
+			ll node=q.front();
+			q.pop();
+			for(size_t i=0;i<adj[node].size();i++){
+				if(dist[node]+1<dist[adj[node][i]]){
+					dist[adj[node][i]]=dist[node]+1;
+					q.push(adj[node][i]);
+				}
+			}
+		}
+		if(dist[endingNode]==LLONG_MAX){
+			dist[endingNode]=-1;
+		}
+		return dist[endingNode];
+	}
+};
 int main(){
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
