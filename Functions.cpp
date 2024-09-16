@@ -149,10 +149,16 @@ ll binarySearch(vector<ll>&v,ll n){
 	}
 	return -1;
 }
+ll stepFunction(ll x,ll t){
+    if(x<=10){
+		return 1;
+	}
+	return 0;
+}
 ll binaryLift(){
 	ll t=0;
 	for(ll i=1<<30;i>=1;i>>=1){
-		//t+=(i*f(i+t));
+		t+=(i*stepFunction(i+t,10));
 	}
 	return t;
 }
@@ -326,5 +332,4 @@ int main(){
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 	cout.tie(NULL);
-	
 }
